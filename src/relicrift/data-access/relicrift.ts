@@ -136,7 +136,7 @@ export function composeRelic({
 }
 
 export function createMetadataUri(composition: RelicComposition) {
-  return `https://relicrift103.colmena.dev/metadata/${slugify(composition.metadata.name)}-${hashSeed(composition.seed)}.json`
+  return `data:application/json;charset=utf-8,${encodeURIComponent(JSON.stringify(composition.metadata))}`
 }
 
 function clamp(value: number, min: number, max: number) {
@@ -263,11 +263,4 @@ function scoreRelic(route: RelicRoute, core: RelicCore, activeModifiers: Expedit
   const grade = readiness >= 78 && payout >= 80 ? 'S' : readiness >= 62 ? 'A' : readiness >= 44 ? 'B' : 'C'
 
   return { danger, grade, payout, readiness }
-}
-
-function slugify(value: string) {
-  return value
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '')
 }

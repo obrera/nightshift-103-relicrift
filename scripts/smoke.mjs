@@ -39,6 +39,41 @@ assert(source.includes('owner,'), 'Connected wallet must be asset owner')
 assert(source.includes('updateAuthority: owner'), 'Connected wallet must be update authority')
 assert(source.includes('claimable: modifiers.length >= 3'), 'Metadata must expose claimable composition rule')
 assert(source.includes('data:image/svg+xml;utf8'), 'Metadata must include first-party SVG image data')
+assert(source.includes('data:application/json;charset=utf-8,'), 'Metadata URI must use a static-safe JSON data URI')
+assert(
+  source.includes('encodeURIComponent(JSON.stringify(composition.metadata))'),
+  'Metadata URI must encode the composed JSON metadata payload',
+)
+assert(
+  !source.includes('https://relicrift103.colmena.dev/metadata/'),
+  'Metadata URI must not target the SPA-served /metadata path',
+)
 assert(source.includes('fetchAssetV1'), 'Claim path must verify MPL Core devnet asset record')
 
-console.log('smoke: required deps, forbidden imports, metadata shape, and claim path passed')
+const smokeMetadata = {
+  attributes: [{ trait_type: 'Grade', value: 'S' }],
+  description: 'Smoke metadata payload',
+  image: 'data:image/svg+xml;utf8,%3Csvg%2F%3E',
+  name: 'RelicRift Smoke',
+  properties: {
+    build: 103,
+    category: 'solana-game-asset',
+    claimable: true,
+    composition: {
+      core: 'glass-oracle',
+      modifiers: ['echo-tax', 'gilded-map', 'hush-lantern'],
+      route: 'cryptline',
+    },
+    schema: 'relicrift.composition.v1',
+  },
+}
+const smokeMetadataUri = `data:application/json;charset=utf-8,${encodeURIComponent(JSON.stringify(smokeMetadata))}`
+const [smokeMetadataUriHeader, smokeMetadataUriPayload] = smokeMetadataUri.split(',', 2)
+const decodedSmokeMetadata = JSON.parse(decodeURIComponent(smokeMetadataUriPayload))
+
+assert(smokeMetadataUriHeader === 'data:application/json;charset=utf-8', 'Metadata URI must declare JSON content')
+assert(!smokeMetadataUri.startsWith('http'), 'Metadata URI must not be an HTTP route')
+assert(decodedSmokeMetadata.properties.build === 103, 'Metadata URI payload must remain parseable build 103 JSON')
+assert(decodedSmokeMetadata.image.startsWith('data:image/svg+xml;utf8,'), 'Metadata JSON must retain embedded SVG image data')
+
+console.log('smoke: required deps, forbidden imports, static-safe JSON metadata URI, and claim path passed')
