@@ -11,11 +11,11 @@ export interface HeaderLink {
 }
 export function ShellUiHeader({ links }: { links: HeaderLink[] }) {
   return (
-    <header className="border-b border-border/60 bg-background px-4 py-3">
+    <header className="border-b border-emerald-300/20 bg-[#07080c] px-4 py-3 text-zinc-100">
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4">
         <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:gap-8">
           <Link className="text-xl font-semibold tracking-tight" to="/">
-            Nightshift 103 Relicrift
+            RelicRift 103
           </Link>
           <nav aria-label="Primary" className="flex flex-wrap items-center gap-4">
             {links.map((link) => (

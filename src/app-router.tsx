@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate } from 'react-router'
+import { createBrowserRouter } from 'react-router'
 
 import type { ShellNotFoundProps } from '@/shell/data-access/shell-not-found-props'
 
@@ -8,7 +8,10 @@ export const appRouter = createBrowserRouter(
   [
     {
       children: [
-        { element: <Navigate replace to="/wallet" />, index: true },
+        {
+          index: true,
+          lazy: () => import('@/relicrift/feature/relicrift-feature'),
+        },
         {
           lazy: () => import('@/about/feature/about-feature'),
           path: 'about',
@@ -21,6 +24,11 @@ export const appRouter = createBrowserRouter(
           lazy: () => import('@/shell/feature/shell-not-found-feature'),
           loader: (): ShellNotFoundProps => ({
             links: [
+              {
+                description: 'Compose and claim a wallet-signed dungeon relic asset.',
+                title: 'RelicRift',
+                to: '/',
+              },
               {
                 description: 'Learn what this starter includes and how the wallet playground is organized.',
                 title: 'About',
@@ -39,6 +47,7 @@ export const appRouter = createBrowserRouter(
       element: (
         <ShellFeature
           links={[
+            { label: 'RelicRift', to: '/' },
             { label: 'Wallet', to: '/wallet' },
             { label: 'About', to: '/about' },
           ]}

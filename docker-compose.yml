@@ -1,0 +1,7 @@
+services:
+  relicrift103:
+    build: .
+    image: relicrift103:latest
+    expose:
+      - "80"
+    restart: unless-stopped
